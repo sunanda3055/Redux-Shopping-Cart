@@ -24,10 +24,9 @@ class App extends React.Component{
         this.props.deleteCartItem(cartData);
     }
 
-
-    componentWillReceiveProps(nextProps){
-        console.log('nextProps-----',nextProps);
-    }
+    // componentWillReceiveProps(nextProps){
+    //     console.log('nextProps-----',nextProps);
+    // }
 
     render(){
         let _list = this.props.products.map((data) =>{
@@ -39,12 +38,18 @@ class App extends React.Component{
         })
 
         let cart_list = this.props.cart.map((cartData) =>{
+            console.log('cartData--->>',cartData);
             return (
                 <Fragment key={cartData.id}>
                     <Cart product={cartData} onIncCartQtyHandler={()=>this.onIncCartQtyHandler(cartData)} onDecCartQtyHandler={()=>this.onDecCartQtyHandler(cartData)} onDeleteCartItemHandler={()=>this.onDeleteCartItemHandler(cartData)} />
                 </Fragment>
             )
         })
+
+        let totalPrice  = this.props.cart.map((item) => {
+            return item.totalPrice
+        });
+        let totalAmount = totalPrice.reduce((a, b) => a + b, 0);
 
         return(
             <div className='container'>
@@ -59,6 +64,7 @@ class App extends React.Component{
                     <div className='right-cart'>
                         <h2 className='right-cart-heading'>YOUR CART</h2>
                         <div className='cart-container'>{cart_list}</div>
+                        <h4>Total Price : {totalAmount}</h4>
                     </div>
                 </div>
             </div>
@@ -82,5 +88,3 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);
-
-//export default App;

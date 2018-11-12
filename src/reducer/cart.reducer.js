@@ -10,28 +10,33 @@ const cartReducer = (state = userInitialState, action)=>{
         case 'decQTY' :
         {
             let {cart} = state;
-            const id = action.payload.id;
-            const name = action.payload.name;
-            const price = action.payload.price;
+            const { id, name, price } = action.payload;
+            let totalPrice = 0;
             let availableQty = action.payload.quantity;
+        
             let obj = cart.filter(item => (id===item.id));
-            console.log('obj in decQty---->',obj);
             let quantity = 1;
+            totalPrice = price * quantity;
+            //console.log('totalPrice before inc--->>',totalPrice);
 
             if(obj.length) {
                 quantity = obj[0].quantity + 1;
                 availableQty = availableQty--;
+                totalPrice = price * quantity;
+                //console.log('totalPrice--->>',totalPrice);
 
                 cart = cart.map((item)=> {
                     if(item.id === id){
-                        return {id,name,quantity,price, availableQty}
+                        return {id, name, quantity, price, availableQty, totalPrice}
                     } else{
                         return item;
                     }
                 });
+                console.log(">>>>>>>> cart >>>>..", cart)
             } else {
-                cart.push({id,name,quantity,price,availableQty});
-                console.log('obj in decQty after adding available Qty- --->',obj);
+                
+                //console.log('obj in decQty after adding available Qty- --->',obj);
+                cart = cart.concat([{id, name, quantity, price, availableQty, totalPrice}]);
             }
 
             return {
@@ -44,15 +49,19 @@ const cartReducer = (state = userInitialState, action)=>{
         {
             let {cart} = state;
             const id = action.payload.id;
+            const price = action.payload.price;
+
             let obj = cart.filter(item => (id===item.id));
             console.log('obj in cart inc--->',obj);
 
             if(obj.length) {
                 let quantity = obj[0].quantity + 1;
                 let availableQty = obj[0].availableQty - 1;
+                let totalPrice = price * quantity;
+                console.log('totalPrice on inc qty--->>',totalPrice);
                 cart = cart.map((item)=> {
                     if(item.id === id){
-                        return {...item ,quantity, availableQty}
+                        return {...item ,quantity, availableQty, totalPrice}
                     } else{
                         return item;
                     }
@@ -68,14 +77,17 @@ const cartReducer = (state = userInitialState, action)=>{
         {
             let {cart} = state;
             const id = action.payload.id;
+            const price = action.payload.price;
             let obj = cart.filter(item => (id===item.id));
 
             if(obj.length) {
                 let quantity = obj[0].quantity - 1;
+                let totalPrice = price * quantity;
+                console.log('totalPrice on dec qty--->>',totalPrice);
                 let availableQty = obj[0].availableQty + 1;
                 cart = cart.map((item)=> {
                     if(item.id === id){
-                        return {...item ,quantity,availableQty}
+                        return {...item, quantity, availableQty, totalPrice}
                     } else{
                         return item;
                     }
